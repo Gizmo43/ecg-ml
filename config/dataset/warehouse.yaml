@@ -1,0 +1,8 @@
+# Dataset exported from ecg-warehouse:
+#   uv run ecg-warehouse dataset export <name>@<version> --format npz --output ../classification/data/<name>/<version>
+# Copy this file to config/dataset/<name>.yaml and set path to the export directory.
+_target_: ecg_ml.data.warehouse.WarehouseDatasetModule
+path: ???
+random_state: 42
+train_val_ratio: 0.1
+# Filtering and normalization are set in config/preprocessing, e.g. preprocessing.steps.filter.lowpass_hz=35.

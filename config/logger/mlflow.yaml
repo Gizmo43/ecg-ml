@@ -1,0 +1,11 @@
+# https://mlflow.org
+
+mlflow:
+  _target_: lightning.pytorch.loggers.mlflow.MLFlowLogger
+  experiment_name: "dev/ecg/classification"
+  tracking_uri: "https://mlflow.aicenter.unn.ru"
+  tags:
+    runner: local
+    branch: ""
+  prefix: ""
+  log_model: true

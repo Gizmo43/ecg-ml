@@ -1,0 +1,13 @@
+# @package _global_
+
+defaults:
+  - override /dataset: 
+  - override /model: 
+seed: 69
+
+trainer:
+  gradient_clip_val: 0.5
+
+data:
+  batch_size: 64
+

@@ -1,0 +1,17 @@
+# @package _global_
+
+# Tests a checkpoint without training:
+# python -m ecg_ml.eval experiment=<experiment> ckpt_path=<path to .ckpt>
+
+defaults:
+  - train
+  - _self_
+
+task_name: "eval"
+
+train: False
+test: True
+
+# required: the checkpoint to test; its labels must match the dataset classes
+# (`???` would not work here: merging it keeps the null from train.yaml)
+ckpt_path: null

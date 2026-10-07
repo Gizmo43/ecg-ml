@@ -1,0 +1,9 @@
+# _target_: ecg_ml.data.three_bases.ThreeBasesDatasetModule
+# random_state: 42
+# path: "/Volumes/MSI DATAMAG/ThreeBases"
+# train_val_ratio: 0.1
+
+_target_: ecg_ml.data.warehouse.WarehouseDatasetModule
+path: /tmp/afib_dataset2
+random_state: 42
+train_val_ratio: 0.1

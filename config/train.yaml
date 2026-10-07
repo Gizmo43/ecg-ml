@@ -1,0 +1,97 @@
+# @package _global_
+
+defaults:
+  - _self_
+  - logger: null # e.g. logger=mlflow
+  - dataset: null
+  - model: null
+  - callbacks: default # disable all with ~callbacks
+  - trainer: default
+  - experiment: ???
+
+    # config for hyperparameter optimization
+  - hparams_search: null
+
+  # optional local config for machine/user specific settings
+  # it's optional since it doesn't need to exist and is excluded from version control
+  - optional local: default
+tags: []
+train: True
+test: True
+task_name: "train"
+
+# simply provide checkpoint path to resume training
+ckpt_path: null
+
+# seed for random number generators in pytorch, numpy and python.random
+seed: null
+
+extras:
+  # disable python warnings if they annoy you
+  ignore_warnings: False
+
+  # ask user for tags if none are provided in the config
+  enforce_tags: False
+
+  # pretty print config tree at the start of the run using Rich library
+  print_config: True
+
+paths:
+  root_dir: .
+
+  # path to data directory
+  data_dir: ${paths.root_dir}/data
+
+  # path to logging directory
+  log_dir: ${paths.root_dir}/logs
+
+  # path to output directory, created dynamically by hydra
+  # path generation pattern is specified in `hydra.run.dir` below
+  # use it to store all files generated during the run, like ckpts and metrics
+  output_dir: ${hydra:runtime.output_dir}
+
+  # path to working directory
+  work_dir: ${hydra:runtime.cwd}
+
+data:
+  batch_size: 128
+  num_workers: 4
+
+# Signal preprocessing, applied to every recording before the train/val/test split.
+# Steps run in the order below; switch one off with `preprocessing.steps.<name>=null`.
+preprocessing:
+  _target_: ecg_ml.data.preprocessors.Pipeline
+  steps:
+    # Zero-phase Butterworth highpass/lowpass and notches; null cutoffs and [] notches are off.
+    # Frequencies must stay below Nyquist (sampling rate / 2):
+    #   500 Hz (three_bases): e.g. highpass_hz 0.05, lowpass_hz 35, notch_hz [50, 60]
+    #   100 Hz: e.g. highpass_hz 0.5, lowpass_hz 35, no 50/60 Hz notches
+    filter:
+      _target_: ecg_ml.data.preprocessors.Filtering
+      highpass_hz: null
+      lowpass_hz: null
+      order: 5
+      notch_hz: []
+      notch_q: 10
+    # Per-lead z-score of every recording; a constant lead becomes zeros.
+    znorm:
+      _target_: ecg_ml.data.preprocessors.ZNormalization
+
+# https://hydra.cc/docs/configure_hydra/intro/
+hydra:
+  # enable color logging
+  # defaults:
+  #   - override hydra_logging: colorlog
+
+  # output directory, generated dynamically on each run
+  run:
+    dir: ${paths.log_dir}/${task_name}/runs/${now:%Y-%m-%d}_${now:%H-%M-%S}
+  sweep:
+    dir: ${paths.log_dir}/${task_name}/multiruns/${now:%Y-%m-%d}_${now:%H-%M-%S}
+    subdir: ${hydra.job.num}
+
+  # job_logging:
+  #   handlers:
+  #     file:
+  #       # Incorporates fix from https://github.com/facebookresearch/hydra/pull/2242
+  #       filename: ${hydra.runtime.output_dir}/${task_name}.log

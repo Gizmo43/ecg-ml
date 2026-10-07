@@ -1,0 +1,12 @@
+# BuildKit picks this up for `docker build -f docker/Dockerfile .`
+# everything is excluded except what the image needs
+*
+!pyproject.toml
+!uv.lock
+!config/
+!src/
+
+**/__pycache__
+**/*.py[cod]
+**/.DS_Store
+config/local/

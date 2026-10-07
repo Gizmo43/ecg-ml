@@ -1,0 +1,32 @@
+_target_: ecg_ml.modules.classifier.ClassifierLModule
+# null takes the classes and their order from the dataset; a list must match them exactly
+labels: null
+network:
+  # Defaults are DenseNet-121; a smaller net, e.g. block_config [6, 12, 24] and growth_rate 12,
+  # trains faster. Signals need about 2 ** (len(block_config) + 1) samples or more.
+  _target_: ecg_ml.models.densenet.DenseNet1d
+  in_channels: 12 # leads
+  output_size: null # number of dataset classes; null takes it from the dataset
+  growth_rate: 32 # channels each dense layer adds
+  block_config: [6, 12, 24, 16] # dense layers per block
+  num_init_features: 64 # stem channels
+  bn_size: 4 # bottleneck channels = bn_size * growth_rate
+  compression: 0.5 # transitions keep this share of channels
+  kernel_size: 7 # odd kernel of dense layer convolutions
+  drop_rate: 0.0 # dropout after each dense layer
+criterion:
+  _target_: torch.nn.BCEWithLogitsLoss
+optimizer:
+  _target_: torch.optim.Adam
+  _partial_: true
+  lr: 0.01
+lr_scheduler:
+  scheduler:
+    _target_: torch.optim.lr_scheduler.ReduceLROnPlateau
+    _partial_: true
+    mode: min
+    factor: 0.1
+    patience: 10
+  monitor: "val/loss"
+  interval: "epoch"
+  frequency: 1

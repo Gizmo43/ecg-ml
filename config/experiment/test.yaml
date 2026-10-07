@@ -1,0 +1,17 @@
+# @package _global_
+
+defaults:
+  - override /dataset: afib_dataset
+  - override /model: densenet
+
+seed: 69
+tags: ["lab", "ptb-xl", "v3"]
+
+trainer:
+  max_epochs: 10
+  gradient_clip_val: 0.5
+  accelerator: mps
+  precision: 32
+
+data:
+  batch_size: 16

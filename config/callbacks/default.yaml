@@ -1,0 +1,54 @@
+# Every callback with `enabled: True` is instantiated.
+# Toggle one with `callbacks.<name>.enabled=true|false`, disable all with `~callbacks`.
+
+# https://lightning.ai/docs/pytorch/stable/api/lightning.pytorch.callbacks.ModelCheckpoint.html
+model_checkpoint:
+  _target_: lightning.pytorch.callbacks.ModelCheckpoint
+  enabled: True
+  dirpath: ${paths.output_dir}/checkpoints # directory to save the model file
+  filename: "epoch_{epoch:03d}" # checkpoint filename
+  monitor: "val/f1/macro" # name of the logged metric which determines when model is improving
+  verbose: True # verbosity mode
+  save_last: True # additionally always save an exact copy of the last checkpoint to a file last.ckpt
+  save_top_k: 1 # save k best models (determined by above metric)
+  mode: "max" # "max" means higher metric value is better, can be also "min"
+  auto_insert_metric_name: False # when True, the checkpoints filenames will contain the metric name
+  save_weights_only: False # if True, then only the model’s weights will be saved
+  every_n_train_steps: null # number of training steps between checkpoints
+  train_time_interval: null # checkpoints are monitored at the specified time interval
+  every_n_epochs: null # number of epochs between checkpoints
+  save_on_train_epoch_end: null # whether to run checkpointing at the end of the training epoch or the end of validation
+
+# https://lightning.ai/docs/pytorch/stable/api/lightning.pytorch.callbacks.ModelSummary.html
+model_summary:
+  _target_: lightning.pytorch.callbacks.ModelSummary
+  enabled: True
+  max_depth: -1 # the maximum depth of layer nesting that the summary will include
+
+# https://lightning.ai/docs/pytorch/stable/api/lightning.pytorch.callbacks.EarlyStopping.html
+early_stopping:
+  _target_: lightning.pytorch.callbacks.EarlyStopping
+  enabled: False
+  monitor: "val/f1/macro" # quantity to be monitored
+  min_delta: 0.00001 # minimum change in the monitored quantity to qualify as an improvement
+  patience: 10 # number of checks with no improvement after which training will be stopped
+  verbose: True # verbosity mode
+  mode: "max" # "max" means higher metric value is better, can be also "min"
+  strict: True # whether to crash the training if monitor is not found in the validation metrics
+  check_finite: True # when set True, stops training when the monitor becomes NaN or infinite
+  stopping_threshold: null # stop training immediately once the monitored quantity reaches this threshold
+  divergence_threshold: null # stop training as soon as the monitored quantity becomes worse than this threshold
+  check_on_train_epoch_end: True # whether to run early stopping at the end of the training epoch
+
+# https://lightning.ai/docs/pytorch/latest/api/lightning.pytorch.callbacks.RichProgressBar.html
+rich_progress_bar:
+  _target_: lightning.pytorch.callbacks.RichProgressBar
+  enabled: False
+
+# https://lightning.ai/docs/pytorch/stable/api/lightning.pytorch.callbacks.LearningRateMonitor.html
+learning_rate_monitor:
+  _target_: lightning.pytorch.callbacks.LearningRateMonitor
+  enabled: False
+  logging_interval: "epoch"
+  log_momentum: false
+  log_weight_decay: false

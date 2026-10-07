@@ -1,0 +1,13 @@
+# @package _global_
+
+# Saves a checkpoint as TorchScript to model.pt in the run directory:
+# python -m ecg_ml.compile experiment=<experiment> ckpt_path=<path to .ckpt>
+
+defaults:
+  - train
+  - _self_
+
+task_name: "compile"
+
+# required: the checkpoint to compile; the labels and hyperparameters come from it
+ckpt_path: null
