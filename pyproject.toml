@@ -26,6 +26,8 @@ dependencies = [
 [dependency-groups]
 dev = [
     "pre-commit", # hooks for applying linters on commit
+    "ipykernel",  # Jupyter kernel for notebooks/
+    "ipywidgets", # progress bars in Jupyter
 ]
 
 # global commands available in the terminal after installing the package
